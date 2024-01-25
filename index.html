@@ -1,0 +1,28 @@
+<html>
+<head>
+<script>
+// ランダムなワードのリストを作成
+var words = ["apple", "banana", "cherry", "dragon", "elephant", "flower", "giraffe", "honey", "ice", "jelly"];
+
+// ワードを表示する関数を定義
+function showWord() {
+  // リストからランダムにワードを選択
+  var index = Math.floor(Math.random() * words.length);
+  var word = words[index];
+  // ワードを表示する要素を取得
+  var element = document.getElementById("word");
+  // ワードを表示
+  element.innerHTML = word;
+  // リストから選択したワードを削除
+  words.splice(index, 1);
+}
+
+// ページが読み込まれたときにワードを表示
+window.onload = showWord;
+</script>
+</head>
+<body>
+<h1 id="word" style="font-size: 50px; text-align: center;"></h1>
+<button onclick="showWord()" style="font-size: 30px; width: 200px; height: 100px;">切り替え</button>
+</body>
+</html>
