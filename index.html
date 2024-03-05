@@ -1,47 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-    <title>ランダムワードジェネレータ</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            font-size: 2em;
-        }
-        button {
-            font-size: 1.5em;
-            padding: 10px 20px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ランダムワードジェネレーター</title>
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+  }
+  #wordDisplay {
+    font-size: 2em;
+    margin-bottom: 20px;
+  }
+  #scoreDisplay {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+  }
+  #nextButton {
+    font-size: 1.5em;
+    padding: 10px 20px;
+  }
+</style>
 </head>
 <body>
-    <div id="word">指示があるまで開始しないでください</div>
-    <div id="score">スコア: 0</div>
-    <button onclick="nextWord()">次へ</button>
+<div id="wordDisplay">指示があるまで開始しないでください</div>
+<div id="scoreDisplay">スコア: 0</div>
+<button id="nextButton">次へ</button>
 
-    <script>
-        var words = ["ハンカチ", "コーラ", "ピアニスト", "マンション", "トランプ", "アップデート", "ロケット", "ピザ", "ハンバーガー", "ピラミッド", "リモコン", "ジェットコースター", "パソコン", "インスタグラム", "アジア", "カウボーイ", "ユニバ", "ディズニーランド", "ボウリング", "カラオケ", "バドミントン", "ヨガ", "アルバイト", "グミ", "キャプテン", "クリスマス", "ジブリ", "サラリーマン", "コンビニ", "ドライブ", "マスタード", "コロナウイルス", "サークル", "ピアス", "インフルエンザ", "レッサーパンダ", "シーソー", "ミュージシャン", "ジャングルジム", "アニメ", "グレープフルーツ", "サッカー", "（クリア）ファイル", "ハードル", "アイドル", "ダーツ", "ビリヤード", "プレゼント", "アンケート", "パイロット", "マッサージ", "クレジットカード", "ネックレス", "キャッチボール", "ネクタイ", "アナウンサー", "パスポート", "ブランコ", "コラボ", "エレベーター", "ハワイ", "シンプル"];
-        var score = 0;
-        var usedWords = [];
+<script>
+const words = ["ハンカチ", "コーラ", "ピアニスト", /* その他のワード */ "シンプル"];
+let usedWords = [];
+let score = 0;
+let isFirstClick = true;
 
-        function nextWord() {
-            if (words.length === 0) {
-                words = usedWords;
-                usedWords = [];
-            }
-            var index = Math.floor(Math.random() * words.length);
-            var word = words[index];
-            words.splice(index, 1);
-            usedWords.push(word);
-            document.getElementById('word').textContent = word;
-            if (score > 0) {
-                document.getElementById('score').textContent = "スコア: " + score;
-            }
-            score++;
-        }
-    </script>
+document.getElementById('nextButton').addEventListener('click', function() {
+  if (isFirstClick) {
+    isFirstClick = false;
+    updateWord();
+  } else {
+    score++;
+    updateWord();
+    updateScore();
+  }
+});
+
+function updateWord() {
+  let word;
+  do {
+    word = words[Math.floor(Math.random() * words.length)];
+  } while (usedWords.includes(word));
+  usedWords.push(word);
+  if (usedWords.length === words.length) {
+    usedWords = [];
+  }
+  document.getElementById('wordDisplay').textContent = word;
+}
+
+function updateScore() {
+  document.getElementById('scoreDisplay').textContent = 'スコア: ' + score;
+}
+</script>
 </body>
 </html>
