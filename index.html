@@ -1,152 +1,47 @@
+<!DOCTYPE html>
 <html>
 <head>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      font-family: Arial, sans-serif;
-    }
-
-    .word {
-      font-size: 5rem;
-      font-weight: bold;
-      color: #333;
-      text-align: center;
-    }
-
-    .score {
-      font-size: 3rem;
-      color: #666;
-      margin-top: 1rem;
-    }
-
-    .buttons {
-      display: flex;
-      margin-top: 2rem;
-    }
-
-    .button {
-      width: 10rem;
-      height: 5rem;
-      border: none;
-      border-radius: 1rem;
-      background-color: #f0f0f0;
-      font-size: 2rem;
-      font-weight: bold;
-      color: #333;
-      cursor: pointer;
-    }
-
-    .button:hover {
-      background-color: #e0e0e0;
-    }
-
-    .button:active {
-      background-color: #d0d0d0;
-    }
-
-    .button + .button {
-      margin-left: 2rem;
-    }
-
-    @media (max-width: 600px) {
-      .word {
-        font-size: 3rem;
-      }
-
-      .score {
-        font-size: 2rem;
-      }
-
-      .button {
-        width: 8rem;
-        height: 4rem;
-        font-size: 1.5rem;
-      }
-
-      .button + .button {
-        margin-left: 1rem;
-      }
-    }
-  </style>
+    <title>ランダムワードジェネレータ</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-size: 2em;
+        }
+        button {
+            font-size: 1.5em;
+            padding: 10px 20px;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="word">指示があるまで開始しないでください</div>
-    <div class="score">スコア: 0</div>
-    <div class="buttons">
-      <button class="button" id="next">次へ</button>
-      <button class="button" id="skip">スキップ</button>
-    </div>
-  </div>
-  <script>
-    // ランダムに表示するワードの配列
-    const words = ["ハンカチ", "コーラ", "ピアニスト", "マンション", "トランプ", "アップデート", "ロケット", "ピザ", "ハンバーガー", "ピラミッド", "リモコン", "ジェットコースター", "パソコン", "インスタグラム", "アジア", "カウボーイ", "ユニバ", "ディズニーランド", "ボウリング", "カラオケ", "バドミントン", "ヨガ", "アルバイト", "グミ", "キャプテン", "クリスマス", "ジブリ", "サラリーマン", "コンビニ", "ドライブ", "マスタード", "コロナウイルス", "サークル", "ピアス", "インフルエンザ", "レッサーパンダ", "シーソー", "ミュージシャン", "ジャングルジム", "アニメ", "グレープフルーツ", "サッカー", "（クリア）ファイル", "ハードル", "アイドル", "ダーツ", "ビリヤード", "プレゼント", "アンケート", "パイロット", "マッサージ", "クレジットカード", "ネックレス", "キャッチボール", "ネクタイ", "アナウンサー", "パスポート", "ブランコ", "コラボ", "エレベーター", "ハワイ", "シンプル"];
+    <div id="word">指示があるまで開始しないでください</div>
+    <div id="score">スコア: 0</div>
+    <button onclick="nextWord()">次へ</button>
 
-    // ワードを表示する要素
-    const wordElement = document.querySelector(".word");
+    <script>
+        var words = ["ハンカチ", "コーラ", "ピアニスト", "マンション", "トランプ", "アップデート", "ロケット", "ピザ", "ハンバーガー", "ピラミッド", "リモコン", "ジェットコースター", "パソコン", "インスタグラム", "アジア", "カウボーイ", "ユニバ", "ディズニーランド", "ボウリング", "カラオケ", "バドミントン", "ヨガ", "アルバイト", "グミ", "キャプテン", "クリスマス", "ジブリ", "サラリーマン", "コンビニ", "ドライブ", "マスタード", "コロナウイルス", "サークル", "ピアス", "インフルエンザ", "レッサーパンダ", "シーソー", "ミュージシャン", "ジャングルジム", "アニメ", "グレープフルーツ", "サッカー", "（クリア）ファイル", "ハードル", "アイドル", "ダーツ", "ビリヤード", "プレゼント", "アンケート", "パイロット", "マッサージ", "クレジットカード", "ネックレス", "キャッチボール", "ネクタイ", "アナウンサー", "パスポート", "ブランコ", "コラボ", "エレベーター", "ハワイ", "シンプル"];
+        var score = 0;
+        var usedWords = [];
 
-    // スコアを表示する要素
-    const scoreElement = document.querySelector(".score");
-
-    // 次へボタン
-    const nextButton = document.getElementById("next");
-
-    // スキップボタン
-    const skipButton = document.getElementById("skip");
-
-    // スコアの変数
-    let score = 0;
-
-    // 最初のボタン押下かどうかのフラグ
-    let first = true;
-
-    // 次へボタンを押したときの処理
-    nextButton.addEventListener("click", function() {
-      // 最初のボタン押下でなければ、スコアを増やす
-      if (!first) {
-        score++;
-      } else {
-        // 最初のボタン押下なら、フラグを変更する
-        first = false;
-      }
-
-      // 配列からランダムにワードを取り出す
-      const index = Math.floor(Math.random() * words.length);
-      const word = words[index];
-
-      // ワードを画面に表示する
-      wordElement.textContent = word;
-
-      // 配列からワードを削除する
-      words.splice(index, 1);
-
-      // 配列が空になったら、終了と表示する
-      if (words.length === 0) {
-        wordElement.textContent = "終了";
-      }
-
-      // スコアを画面に表示する
-      scoreElement.textContent = "スコア: " + score;
-    });
-
-    // スキップボタンを押したときの処理
-    skipButton.addEventListener("click", function() {
-      // スコアを減らす
-      score--;
-
-      // スコアを画面に表示する
-      scoreElement.textContent = "スコア: " + score;
-    });
-  </script>
+        function nextWord() {
+            if (words.length === 0) {
+                words = usedWords;
+                usedWords = [];
+            }
+            var index = Math.floor(Math.random() * words.length);
+            var word = words[index];
+            words.splice(index, 1);
+            usedWords.push(word);
+            document.getElementById('word').textContent = word;
+            if (score > 0) {
+                document.getElementById('score').textContent = "スコア: " + score;
+            }
+            score++;
+        }
+    </script>
 </body>
 </html>
